@@ -1,0 +1,1 @@
+def mostrar_estado():    print("Producto registrado")mostrar_estado()
