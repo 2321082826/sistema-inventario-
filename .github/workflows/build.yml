@@ -4,8 +4,10 @@ name: Verificacion del Sistema de Inventario
 on:
   push:
     branches: [main]
+
   pull_request:
     branches: [main]
+
   workflow_dispatch:
 
 permissions:
@@ -16,16 +18,41 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Paso 1: Descargar el codigo
       - name: Descargar codigo
         uses: actions/checkout@v6
 
+      # Paso 2: Configurar Python
       - name: Configurar Python
         uses: actions/setup-python@v7
         with:
           python-version: '3.13'
 
+      # Paso 3: Mostrar la version de Python
+      - name: Verificar version de Python
+        run: python --version
+
+      # Paso 4: Buscar archivos Python
+      - name: Buscar archivos Python
+        run: |
+          echo "Buscando archivos Python..."
+          find . -type f -name '*.py'
+
+      # Paso 5: Verificar que existan archivos Python
+      - name: Validar archivos Python
+        run: |
+          test -n "$(find . -type f -name '*.py' -print -quit)" || {
+            echo "ERROR: No hay archivos Python"
+            exit 1
+          }
+
+      # Paso 6: Compilar y verificar sintaxis
       - name: Compilar archivos Python
         run: |
-          test -n "$(find src -type f -name '*.py' -print -quit)" || { echo "No hay archivos Python"; exit 1; }
-          python -m compileall -q src
-    
+          echo "Verificando sintaxis del proyecto..."
+          python -m compileall -q -f .
+
+      # Paso 7: Confirmar resultado
+      - name: Confirmar construccion
+        run: |
+          echo "Construccion verificada correctamente"
