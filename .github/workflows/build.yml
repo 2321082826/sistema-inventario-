@@ -1,0 +1,31 @@
+
+name: Verificacion del Sistema de Inventario
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar codigo
+        uses: actions/checkout@v6
+
+      - name: Configurar Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+
+      - name: Compilar archivos Python
+        run: |
+          test -n "$(find src -type f -name '*.py' -print -quit)" || { echo "No hay archivos Python"; exit 1; }
+          python -m compileall -q src
+    
