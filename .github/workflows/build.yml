@@ -38,7 +38,7 @@ jobs:
           echo "Buscando archivos Python..."
           find . -type f -name '*.py'
 
-      # Paso 5: Verificar que existan archivos Python
+      # Paso 5: Verificar archivos Python
       - name: Validar archivos Python
         run: |
           test -n "$(find . -type f -name '*.py' -print -quit)" || {
@@ -46,13 +46,19 @@ jobs:
             exit 1
           }
 
-      # Paso 6: Compilar y verificar sintaxis
+      # Paso 6: Compilar archivos Python
       - name: Compilar archivos Python
         run: |
           echo "Verificando sintaxis del proyecto..."
           python -m compileall -q -f .
 
-      # Paso 7: Confirmar resultado
+      # Paso 7: Ejecutar pruebas automatizadas
+      - name: Ejecutar pruebas automatizadas
+        run: |
+          echo "Ejecutando pruebas del sistema..."
+          python -m unittest discover -s tests -p "test_*.py" -v
+
+      # Paso 8: Confirmar resultado
       - name: Confirmar construccion
         run: |
-          echo "Construccion verificada correctamente"
+          echo "Construccion y pruebas completadas correctamente"
