@@ -1,0 +1,37 @@
+
+name: Liberacion del Sistema de Inventario
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  liberar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v6
+
+      - name: Preparar Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+
+      - name: Ejecutar pruebas
+        run: |
+          python -m unittest discover -s tests -p "test_*.py" -v
+
+      - name: Crear paquete ZIP
+        run: |
+          zip -r sistema-inventario-${GITHUB_REF_NAME}.zip src/
+
+      - name: Publicar version
+        uses: softprops/action-gh-release@v2
+        with:
+          files: sistema-inventario-${{ github.ref_name }}.zip
+          generate_release_notes: true
